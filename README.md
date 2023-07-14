@@ -1,3 +1,49 @@
+# PandoraM
+
+一个用于好友间合租共享ChatGPT的[潘多拉 (Pandora)](https://github.com/pengzhile/pandora)魔改版本~
+
+![image-20230714105712338](https://github.com/MoeMion/pandoram/raw/master/assets/enter.png)
+
+基于原项目版本：
+
+- pandora 1.2.7
+- pandora-cloud 0.4.10
+
+## 功能说明
+
+在本版本中对原项目[pandora-cloud](https://github.com/pengzhile/pandora-cloud)进行魔改，使其能直接从环境变量中读取账号密码和MFA，并且在用户输入一个通用的口令后即可自动登录Pandora-cloud。缓解了好友记不住账号密码、风控等问题。
+
+## 部署使用
+
+本魔改建议使用Docker部署，若需其他部署方式请详见原项目文档。如需修改入口页面，请手动修改`./pandora-cloud/src/pandora_cloud/flask/templates/login_host.html`
+
+以下给出部署与使用示例：
+
+```
+# 构建镜像
+docker build . -t pandoram
+
+# 启动容器
+docker run -d -p 8899:8899 \
+-e PANDORA_SERVER=0.0.0.0:8899 \
+-e PANDORA_CLOUD=cloud \
+-e OPENAI_EMAIL=[OPENAI账号] \
+-e OPENAI_PASSWORD=[OPENAI密码] \
+-e OPENAI_MFA=[两步验证] \
+-e HOST_PASSWORD=[入口口令，留空则直接登录] \
+--name mypandora pandoram
+```
+
+## 注意
+
+由于没有对入口密码做防爆破处理，此项目可能存在安全风险，请谨慎部署！
+
+本人没有Python编程经验，故只是对代码进行简单魔改，若存在BUG，请在issue中提出！
+
+本项目并不随原项目同步更新！
+
+**以下为原项目README**
+
 # Pandora
 
 潘多拉 (Pandora)，一个让你呼吸顺畅的 ChatGPT。
@@ -22,7 +68,7 @@
 * 也可以官方登录，然后访问 [这里](http://chat.openai.com/api/auth/session) 拿 `Access Token`
 * `Access Token` 有效期 `14` 天，期间访问**不需要梯子**。这意味着你在手机上也可随意使用。
 * 这个页面上还包含一个共享账号的链接，**没有账号**的可以点进去体验一下。
- 
+
 ## ChatGPT使用时可能会遇到：
 
 ### 1. Please stand by, while we are checking your browser... 

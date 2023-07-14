@@ -8,6 +8,8 @@ WORKDIR /opt/app
 
 ADD . .
 
-RUN pip --no-cache-dir install --upgrade pip && pip --no-cache-dir install .[api,cloud]
+RUN pip --no-cache-dir install --upgrade pip && pip --no-cache-dir install .[api]
+
+RUN cd ./pandora-cloud && python setup.py install
 
 ENTRYPOINT ["bin/startup.sh"]
