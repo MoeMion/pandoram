@@ -25,7 +25,7 @@ def check_access_token(access_token, api=False):
     payload = (decode(access_token, key=__public_key, algorithms='RS256', audience=[
         "https://api.openai.com/v1",
         "https://openai.openai.auth0app.com/userinfo"
-    ], issuer='https://auth0.openai.com/'),option={
+    ], issuer='https://auth0.openai.com/'),options={
         'verify_iat':False
     })
 
