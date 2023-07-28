@@ -6,8 +6,8 @@
 
 基于原项目版本：
 
-- pandora 1.2.7
-- pandora-cloud 0.4.10
+- pandora 1.3.0
+- pandora-cloud 0.5.1
 
 ## 功能说明
 
@@ -68,7 +68,7 @@ docker run -d -p 8899:8899 \
 * 也可以官方登录，然后访问 [这里](http://chat.openai.com/api/auth/session) 拿 `Access Token`
 * `Access Token` 有效期 `14` 天，期间访问**不需要梯子**。这意味着你在手机上也可随意使用。
 * 这个页面上还包含一个共享账号的链接，**没有账号**的可以点进去体验一下。
-
+ 
 ## ChatGPT使用时可能会遇到：
 
 ### 1. Please stand by, while we are checking your browser... 
