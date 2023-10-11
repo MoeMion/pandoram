@@ -178,7 +178,8 @@ class ChatBot:
                     ti = await self.__fetch_share_tokeninfo(access_token)
                     payload = {'exp': ti['expire_at']}
 
-                resp = jsonify({'code': 0, 'url': next_url if next_url else '/'})
+                resp = make_response('please wait...', 302)
+                resp.headers.set('Location', next_url if next_url else '/')
                 self.__set_cookie(resp, access_token, payload['exp'])
 
                 return resp
@@ -240,8 +241,7 @@ class ChatBot:
                     ti = await self.__fetch_share_tokeninfo(access_token)
                     payload = {'exp': ti['expire_at']}
 
-                resp = make_response('please wait...', 307)
-                resp.headers.set('Location', next_url if next_url else '/')
+                resp = jsonify({'code': 0, 'url': next_url if next_url else '/'})
                 self.__set_cookie(resp, access_token, payload['exp'])
 
                 return resp
