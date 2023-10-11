@@ -29,10 +29,8 @@ class ChatBot:
         self.login_local = login_local
         self.log_level = logging.DEBUG if debug else logging.WARN
         self.api_prefix = getenv('CHATGPT_API_PREFIX','https://ai.fakeopen.com')
-        self.openai_email = getenv('OPENAI_EMAIL', '')
-        self.openai_password = getenv('OPENAI_PASSWORD', '')
         self.host_password = getenv('HOST_PASSWORD', '')
-        self.mfa_code = getenv('MFA_CODE', '')
+        self.access_token = getenv('ACCESS_TOKEN', '')
 
         hook_logging(level=self.log_level, format='[%(asctime)s] %(levelname)s in %(module)s: %(message)s')
         self.logger = logging.getLogger('waitress')
@@ -162,32 +160,32 @@ class ChatBot:
         return resp
 
     async def login(self):
-        if self.openai_email != '' and self.openai_password != '' and self.host_password != '':
+        if self.host_password != '':
             return render_template('login_host.html', error="")
         return render_template('login.html', api_prefix=self.__get_api_prefix(), next=request.args.get('next', ''))
 
     async def login_host(self):
         if self.host_password != request.form.get('miaomiaocode'):
             return render_template('login_host.html', error="妙妙咒语不正确，请重新再试！")
-        username = self.openai_email
-        password = self.openai_password
-        mfa_code = self.mfa_code
+        access_token = self.access_token
         next_url = request.form.get('next')
         error = None
 
-        if username and password:
+        if access_token:
             try:
-                access_token = Auth0(username, password, self.proxy, mfa=mfa_code).auth(self.login_local)
                 payload = check_access_token(access_token)
+                if True == payload:
+                    ti = await self.__fetch_share_tokeninfo(access_token)
+                    payload = {'exp': ti['expire_at']}
 
-                resp = make_response('please wait...', 302)
-                resp.headers.set('Location', next_url if next_url else '/')
+                resp = jsonify({'code': 0, 'url': next_url if next_url else '/'})
                 self.__set_cookie(resp, access_token, payload['exp'])
 
                 return resp
             except Exception as e:
                 error = str(e)
-        return render_template('login_host.html',error=error)
+
+        return jsonify({'code': 500, 'message': 'Invalid access token: {}'.format(error)})
             
     async def login_post(self):
         username = request.form.get('username')
